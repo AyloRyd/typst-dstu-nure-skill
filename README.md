@@ -1,5 +1,14 @@
 # typst-dstu-nure
 
+> [!NOTE]
+> Цей скіл існує заради Typst-пакета
+> [linerds/typst_nure_template](https://github.com/linerds/typst_nure_template/tree/0.1.1)
+> і поза ним не має сенсу. Сам пакет — не моя робота: верстку за ДСТУ, титульні
+> сторінки, стилі, нумерацію та бібліографію зробили його автори. Моє тут лише
+> обгортка — опис правил оформлення, яких немає в документації пакета, та
+> приклади використання. Якщо шукаєте власне інструмент, а не інструкцію для
+> агента, вам потрібне першоджерело, а не цей репозиторій.
+
 Агентний скіл для написання звітів з практичних, лабораторних і курсових робіт
 ХНУРЕ у Typst із дотриманням ДСТУ.
 
@@ -9,18 +18,48 @@
 
 ## Встановлення
 
-Скіл сумісний з Claude Code та Antigravity. Достатньо покласти теку туди, де
-відповідний агент шукає скіли, або зробити симлінк:
+Скіл — це звичайна тека з `SKILL.md`, тому його розуміє будь-який агент із
+підтримкою Agent Skills. Зручно тримати одну копію й розкласти симлінки:
 
 ```bash
 git clone https://github.com/AyloRyd/typst-dstu-nure-skill.git ~/.skills/typst-dstu-nure-lb
+```
 
-# Claude Code (назва теки має збігатися з полем name у SKILL.md)
+> [!IMPORTANT]
+> Поле `name` в `SKILL.md` — `typst-dstu-nure`. Claude Code, Cursor і OpenCode
+> вимагають, щоб ім'я теки збігалося з `name`, тому симлінк називайте саме
+> `typst-dstu-nure`, а не так, як називається репозиторій.
+
+Де який агент шукає скіли:
+
+| Агент | Глобально | У межах проєкту |
+| --- | --- | --- |
+| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
+| Codex CLI | `~/.agents/skills/` | `.agents/skills/` (а також батьківські теки та корінь репозиторію) |
+| Cursor | `~/.agents/skills/`, `~/.cursor/skills/` | `.agents/skills/`, `.cursor/skills/` |
+| OpenCode | `~/.agents/skills/`, `~/.config/opencode/skills/`, `~/.claude/skills/` | `.agents/skills/`, `.opencode/skills/`, `.claude/skills/` |
+| Antigravity | `~/.gemini/config/skills/` | — |
+
+`~/.agents/skills/` читають Codex, Cursor і OpenCode, тому для всіх трьох
+достатньо одного симлінка:
+
+```bash
+# Codex, Cursor, OpenCode
+ln -s ~/.skills/typst-dstu-nure-lb ~/.agents/skills/typst-dstu-nure
+
+# Claude Code (Cursor і OpenCode теж читають цю теку)
 ln -s ~/.skills/typst-dstu-nure-lb ~/.claude/skills/typst-dstu-nure
 
 # Antigravity
-ln -s ~/.skills/typst-dstu-nure-lb ~/.gemini/config/skills/typst-dstu-nure-lb
+ln -s ~/.skills/typst-dstu-nure-lb ~/.gemini/config/skills/typst-dstu-nure
 ```
+
+Cursor додатково підхоплює теки Claude та Codex, а Codex у старіших версіях
+шукав скіли в `$CODEX_HOME/skills` (типово `~/.codex/skills/`) — якщо у вас
+саме така збірка, кладіть симлінк туди.
+
+Скіли в теці проєкту зручні, коли робота здається з репозиторію: тоді
+`SKILL.md` їде разом із нею й нічого не треба налаштовувати на іншій машині.
 
 Сам Typst-пакет `nure` встановлюється окремо — див. `resources/README.md`.
 
