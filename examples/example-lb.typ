@@ -11,20 +11,34 @@
   university: "ХНУРЕ",
   mentors: (
     (
-      name: "Мустерфрау Е. М.",
+      name: "Петренко П. П.",
       degree: "ст. викладач катедри ПІ",
       gender: "f",
     ),
   ),
   authors: (
     (
-      name: "Мустерман М. М.",
+      name: "Іваненко І. І.",
       edu-program: "ПЗПІ",
       group: "XX-X",
       gender: "m",
       variant: none,
     ),
   ),
+)
+
+#let placeholder(caption, height: 6cm) = figure(
+  rect(
+    width: 100%,
+    height: height,
+    fill: luma(230),
+    stroke: 0.5pt + luma(170),
+    inset: 1em,
+  )[
+    #set align(center + horizon)
+    #text(fill: luma(90), caption)
+  ],
+  caption: caption,
 )
 
 #v(-spacing)
@@ -196,15 +210,15 @@ Google Maps працює на основі власної платформи Bor
 ```
 
 == Організація Git-репозиторію
-Назва репозиторію: `apz-pzpi-xx-x-mustermann-max`.
+Назва репозиторію: `apz-pzpi-xx-x-ivanenko-ivan`.
 
 Структура репозиторію:
 ```
 Pract1/
 Pract2/
- ├── pzpi-xx-x-mustermann-max-pract2/
+ ├── pzpi-xx-x-ivanenko-ivan-pract2/
  │    └── code-examples-pract2.ts
- └── pzpi-xx-x-mustermann-max-pract2.txt
+ └── pzpi-xx-x-ivanenko-ivan-pract2.txt
 ```
 
 == Підготовка презентації
@@ -257,8 +271,13 @@ Pract2/
 06:14 API-приклади та архітектурні висновки
 
 = Слайди презентації
+// Справжні слайди підключаються так:
+//   #for i in range(8) {
+//     figure(image("prez.pdf", page: i + 1), caption: "Слайд " + str(i + 1))
+//   }
+// Доки файлу prez.pdf немає, використовуємо плейсхолдери.
 #for i in range(8) {
-  figure(image("prez.pdf", page: i + 1), caption: "Слайд " + str(i + 1))
+  placeholder("Слайд " + str(i + 1), height: 5cm)
 }
 
 = Приклади програмного коду та запити до ШІ
