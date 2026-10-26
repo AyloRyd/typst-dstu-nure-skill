@@ -1,0 +1,44 @@
+name: Update vendored templates
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Mondays, 06:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Install Typst and fonts
+        run: |
+          sudo apt-get install -y fonts-liberation
+          curl -fsSL https://github.com/typst/typst/releases/download/v0.15.1/typst-x86_64-unknown-linux-musl.tar.xz \
+            | tar -xJ --strip-components=1 -C /usr/local/bin typst-x86_64-unknown-linux-musl/typst
+          typst --version
+
+      - name: Bump submodules and compile examples
+        id: bump
+        continue-on-error: true
+        run: scripts/update-vendor.sh
+
+      - name: Commit accepted bumps
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --cached --quiet; then
+            echo "Nothing to commit"
+          else
+            git commit -m "chore(vendor): bump upstream templates"
+            git push
+          fi
+
+      - name: Fail if a bump was rejected
+        if: steps.bump.outcome == 'failure'
+        run: exit 1

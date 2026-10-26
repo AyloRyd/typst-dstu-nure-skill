@@ -1,0 +1,8 @@
+[submodule "vendor/pencelheimer"]
+	path = vendor/pencelheimer
+	url = https://github.com/pencelheimer/typst-nure-template.git
+	branch = main
+[submodule "vendor/linerds"]
+	path = vendor/linerds
+	url = https://github.com/linerds/typst_nure_template.git
+	branch = 0.1.1
