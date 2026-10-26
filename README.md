@@ -22,7 +22,7 @@
 підтримкою Agent Skills. Зручно тримати одну копію й розкласти симлінки:
 
 ```bash
-git clone https://github.com/AyloRyd/typst-dstu-nure-skill.git ~/.skills/typst-dstu-nure-lb
+git clone https://github.com/AyloRyd/typst-dstu-nure-skill.git ~/.skills/typst-dstu-nure
 ```
 
 > [!IMPORTANT]
@@ -45,13 +45,13 @@ git clone https://github.com/AyloRyd/typst-dstu-nure-skill.git ~/.skills/typst-d
 
 ```bash
 # Codex, Cursor, OpenCode
-ln -s ~/.skills/typst-dstu-nure-lb ~/.agents/skills/typst-dstu-nure
+ln -s ~/.skills/typst-dstu-nure ~/.agents/skills/typst-dstu-nure
 
 # Claude Code (Cursor і OpenCode теж читають цю теку)
-ln -s ~/.skills/typst-dstu-nure-lb ~/.claude/skills/typst-dstu-nure
+ln -s ~/.skills/typst-dstu-nure ~/.claude/skills/typst-dstu-nure
 
 # Antigravity
-ln -s ~/.skills/typst-dstu-nure-lb ~/.gemini/config/skills/typst-dstu-nure
+ln -s ~/.skills/typst-dstu-nure ~/.gemini/config/skills/typst-dstu-nure
 ```
 
 Cursor додатково підхоплює теки Claude та Codex, а Codex у старіших версіях

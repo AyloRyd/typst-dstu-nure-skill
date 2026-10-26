@@ -12,7 +12,7 @@
   mentors: (
     (
       name: "Петренко П. П.",
-      degree: "ст. викладач катедри ПІ",
+      degree: "ст. викладач кафедри ПІ",
       gender: "f",
     ),
   ),
@@ -26,6 +26,18 @@
     ),
   ),
 )
+
+// Автоматична нумерація рядків у лістингах із вказаною мовою.
+// Блоки без мови (дерева каталогів тощо) лишаються без номерів.
+#show raw.where(block: true): it => {
+  if it.lang == none { return it }
+  show raw.line: line => {
+    box(width: 1.5em, align(right, str(line.number)))
+    h(0.75em)
+    line.body
+  }
+  it
+}
 
 #let placeholder(caption, height: 6cm) = figure(
   rect(
@@ -70,7 +82,7 @@
 - назва системи: Google Maps;
 - розробник: компанія Google LLC (США), підрозділ Alphabet Inc.;
 - призначення системи:
-  - область застосування: картографічні та геопросторові сервіси. використовується у навігації, логістиці, туризмі, містобудуванні, маркетингу (геотаргетинг) та будь-яких галузях, де важлива прив'язка до місця розташування;
+  - область застосування: картографічні та геопросторові сервіси. Використовується у навігації, логістиці, туризмі, містобудуванні, маркетингу (геотаргетинг) та будь-яких галузях, де важлива прив'язка до місця розташування;
   - користувачі: більше ніж мільярд активних користувачів щомісяця -- від приватних осіб, які шукають маршрут, до великих корпорацій, що інтегрують Maps API у власні продукти;
   - основні функції: інтерактивні векторні та растрові карти, покрокова навігація з реальним трафіком, Street View (огляд вулиць), пошук місць (Places), розрахунок маршрутів для різних видів транспорту, відображення супутникових знімків, а також Maps Platform API для сторонніх розробників.
 
@@ -79,10 +91,10 @@ Google Maps побудовано на основі мікросервісної 
 
 Обґрунтування вибору:
 
-+ незалежне масштабування: сервіс тайлів карти, сервіс маршрутизації та сервіс пошуку місць мають принципово різне навантаження і потребують незалежного горизонтального масштабування. мікросервісна архітектура дозволяє виділяти ресурси точково;
++ незалежне масштабування: сервіс тайлів карти, сервіс маршрутизації та сервіс пошуку місць мають принципово різне навантаження і потребують незалежного горизонтального масштабування. Мікросервісна архітектура дозволяє виділяти ресурси точково;
 + висока доступність: розподіл на незалежні сервіси гарантує, що збій у, наприклад, модулі Street View не вплине на роботу навігації;
 + технологічна гнучкість: різні підсистеми використовують оптимальні технології -- C++ для критичних обчислень маршрутів, Go та Java для API-шлюзів, Python для аналізу даних;
-+ безперервне оновлення: карти оновлюються постійно (дані від користувачів, супутники, автомобілі Street View). мікросервіси дозволяють оновлювати окремі компоненти пайплайну обробки геоданих без зупинки всього сервісу.
++ безперервне оновлення: карти оновлюються постійно (дані від користувачів, супутники, автомобілі Street View). Мікросервіси дозволяють оновлювати окремі компоненти пайплайну обробки геоданих без зупинки всього сервісу.
 
 == Основні компоненти системи
 === Інтерфейс користувача (Frontend)
@@ -93,19 +105,19 @@ API Gateway виступає єдиною точкою входу для всі�
 
 === Рівень бізнес-логіки
 Складається з декількох спеціалізованих сервісів:
-- Tile service: генерує та роздає тайли карти (растрові PNG/JPEG та векторні Protobuf). це найнавантаженіший компонент системи;
-- Routing service: розраховує оптимальні маршрути за допомогою варіацій алгоритму Дейкстри та A\* на основі графа доріг усієї планети. реалізовано на C++ для максимальної продуктивності;
-- Places service: зберігає та обслуговує дані про сотні мільйонів місць -- від ресторанів до аеропортів -- з рейтингами, фотографіями та графіком роботи;
-- Traffic service: агрегує анонімізовані дані про місцезнаходження від пристроїв у реальному часі та прогнозує затори;
-- Geocoding service: перетворює текстові адреси в координати (геокодування) та навпаки (зворотне геокодування).
+- Tile Service: генерує та роздає тайли карти (растрові PNG/JPEG та векторні Protobuf). Це найнавантаженіший компонент системи;
+- Routing Service: розраховує оптимальні маршрути за допомогою варіацій алгоритму Дейкстри та A\* на основі графа доріг усієї планети. Реалізовано на C++ для максимальної продуктивності;
+- Places Service: зберігає та обслуговує дані про сотні мільйонів місць -- від ресторанів до аеропортів -- з рейтингами, фотографіями та графіком роботи;
+- Traffic Service: агрегує анонімізовані дані про місцезнаходження від пристроїв у реальному часі та прогнозує затори;
+- Geocoding Service: перетворює текстові адреси в координати (геокодування) та навпаки (зворотне геокодування).
 
 === Рівень зберігання даних
-- Bigtable: власна розподілена колонкова NoSQL-база даних Google, оптимізована для зберігання мільярдів тайлів карти. ключ рядка -- це геохеш (просторовий індекс), що дозволяє ефективно вибирати тайли для заданої географічної області;
-- Spanner: глобально розподілена реляційна база даних Google з ACID-транзакціями. використовується для зберігання даних про місця (Places), де важлива узгодженість даних;
-- Pub/sub (потокова обробка): система черг повідомлень для асинхронної обробки потоку геоподій від мільйонів пристроїв.
+- Bigtable: власна розподілена колонкова NoSQL-база даних Google, оптимізована для зберігання мільярдів тайлів карти. Ключ рядка -- це геохеш (просторовий індекс), що дозволяє ефективно вибирати тайли для заданої географічної області;
+- Spanner: глобально розподілена реляційна база даних Google з ACID-транзакціями. Використовується для зберігання даних про місця (Places), де важлива узгодженість даних;
+- Pub/Sub (потокова обробка): система черг повідомлень для асинхронної обробки потоку геоподій від мільйонів пристроїв.
 
 === Допоміжні сервіси
-- Street view processing pipeline: розподілений пайплайн на основі MapReduce для обробки мільярдів фотографій, їхнього зшивання у панорами та розмивання осіб і номерних знаків;
+- Street View processing pipeline: розподілений пайплайн на основі MapReduce для обробки мільярдів фотографій, їхнього зшивання у панорами та розмивання осіб і номерних знаків;
 - Map updates pipeline: система автоматичного оновлення карт на основі даних від користувачів, супутникових знімків та автомобілів Google;
 - CDN (Cloud CDN): глобальна мережа доставки контенту для кешування тайлів поблизу кінцевих користувачів.
 
@@ -114,16 +126,16 @@ API Gateway виступає єдиною точкою входу для всі�
 
 === Опис потоків даних
 Опис потоків даних:
-- запит тайла карти (критичний шлях): клієнт визначає, які тайли потрібні для поточного вікна перегляду, та надсилає HTTPS-запит до API Gateway. gateway маршрутизує запит до Tile Service. tile service перевіряє багаторівневий кеш (L1: пам'ять процесу, L2: Memorystore/Redis, L3: Cloud CDN). у разі промаху кешу тайл генерується з геоданих, що зберігаються у Bigtable, та повертається клієнту, одночасно заносячись у кеш;
+- запит тайла карти (критичний шлях): клієнт визначає, які тайли потрібні для поточного вікна перегляду, та надсилає HTTPS-запит до API Gateway. Gateway маршрутизує запит до Tile Service. Tile Service перевіряє багаторівневий кеш (L1: пам'ять процесу, L2: Memorystore/Redis, L3: Cloud CDN). У разі промаху кешу тайл генерується з геоданих, що зберігаються у Bigtable, та повертається клієнту, одночасно заносячись у кеш;
 
-- розрахунок маршруту: клієнт надсилає запит з точкою відправлення та призначення. routing service завантажує відповідну частину графа доріг та застосовує алгоритм пошуку найкоротшого шляху з урахуванням поточних даних про трафік від Traffic Service (підписка через Pub/Sub). результат повертається як серіалізований маршрут у форматі Protobuf;
+- розрахунок маршруту: клієнт надсилає запит з точкою відправлення та призначення. Routing Service завантажує відповідну частину графа доріг та застосовує алгоритм пошуку найкоротшого шляху з урахуванням поточних даних про трафік від Traffic Service (підписка через Pub/Sub). Результат повертається як серіалізований маршрут у форматі Protobuf;
 
-- збір даних про трафік: пристрої з увімкненим обміном даними анонімно надсилають своє місцезнаходження та швидкість. ці події публікуються у Pub/Sub-топіки та обробляються потоковим сервісом (Dataflow/Apache Beam), який агрегує дані по ділянках доріг та оновлює стан Traffic Service.
+- збір даних про трафік: пристрої з увімкненим обміном даними анонімно надсилають своє місцезнаходження та швидкість. Ці події публікуються у Pub/Sub-топіки та обробляються потоковим сервісом (Dataflow/Apache Beam), який агрегує дані по ділянках доріг та оновлює стан Traffic Service.
 
 === Протоколи взаємодії
 - HTTP/2 та gRPC: для внутрішньої комунікації між мікросервісами. gRPC забезпечує строгу типізацію через Protobuf-схеми та низькі затримки завдяки бінарній серіалізації;
 - WebSocket: для навігації в реальному часі -- постійне з'єднання дозволяє серверу "штовхати" оновлення трафіку та перерахунки маршруту без опитування (polling) з боку клієнта;
-- Protobuf (Protocol Buffers): бінарний формат серіалізації від Google для передачі тайлів та геометрій. у 3--10 разів компактніший за JSON, що критично при передачі мільярдів тайлів.
+- Protobuf (Protocol Buffers): бінарний формат серіалізації від Google для передачі тайлів та геометрій. У 3--10 разів компактніший за JSON, що критично при передачі мільярдів тайлів.
 
 === Механізми синхронізації
 Для системи такого масштабу суворий принцип узгодженості (strong consistency) застосовується лише там, де це необхідно. Дані про місця (Places) зберігаються у Spanner з глобальними транзакціями. Тайли карти та Traffic-дані використовують принцип _eventual consistency_ -- незначна затримка в оновленні карти (секунди або хвилини) є прийнятною для більшості сценаріїв використання.
@@ -151,62 +163,62 @@ Google Maps працює на основі власної платформи Bor
 Цей фрагмент демонструє взаємодію з сервісом маршрутизації. Клієнт надсилає HTTP GET-запит до API Gateway, який маршрутизує його до Routing Service. Відповідь містить серіалізований маршрут у форматі JSON (у внутрішній комунікації використовується Protobuf):
 
 ```typescript
-01  const API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
-02
-03  // Запит до Directions API (взаємодія з Routing Service)
-04  const url = new URL("https://maps.googleapis.com/maps/api/directions/json");
-05  url.search = new URLSearchParams({
-06    origin: "Харків, Україна",
-07    destination: "Київ, Україна",
-08    mode: "driving",
-09    // Врахування поточного трафіку (Traffic Service)
-10    departure_time: "now",
-11    traffic_model: "best_guess",
-12    key: API_KEY,
-13  }).toString();
-14
-15  const response = await fetch(url);
-16  const data = await response.json();
-17
-18  if (data.status === "OK") {
-19    const route = data.routes[0].legs[0];
-20    console.log(`Відстань: ${route.distance.text}`);
-21    console.log(`Час без трафіку: ${route.duration.text}`);
-22    // duration_in_traffic -- дані від Traffic Service у реальному часі
-23    console.log(`Час з урахуванням трафіку: ${route.duration_in_traffic.text}`);
-24  }
+const API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
+
+// Запит до Directions API (взаємодія з Routing Service)
+const url = new URL("https://maps.googleapis.com/maps/api/directions/json");
+url.search = new URLSearchParams({
+  origin: "Харків, Україна",
+  destination: "Київ, Україна",
+  mode: "driving",
+  // Врахування поточного трафіку (Traffic Service)
+  departure_time: "now",
+  traffic_model: "best_guess",
+  key: API_KEY,
+}).toString();
+
+const response = await fetch(url);
+const data = await response.json();
+
+if (data.status === "OK") {
+  const route = data.routes[0].legs[0];
+  console.log(`Відстань: ${route.distance.text}`);
+  console.log(`Час без трафіку: ${route.duration.text}`);
+  // duration_in_traffic -- дані від Traffic Service у реальному часі
+  console.log(`Час з урахуванням трафіку: ${route.duration_in_traffic.text}`);
+}
 ```
 
 === Запит до Places API (Places Service)
 Цей приклад демонструє взаємодію з Places Service -- одним із найбільш навантажених мікросервісів. Пошук відбувається за геопросторовим індексом, що зберігається у Spanner:
 
 ```typescript
-01  const API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
-02
-03  // Пошук найближчих кав'ярень (Places Service / Spanner)
-04  const url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json");
-05  url.search = new URLSearchParams({
-06    // Координати центру ХНУРЕ
-07    location: "49.9935,36.2304",
-08    radius: "500",
-09    type: "cafe",
-10    language: "uk",
-11    key: API_KEY,
-12  }).toString();
-13
-14  const response = await fetch(url);
-15  const data = await response.json();
-16
-17  // Обробка результатів від Places Service
-18  for (const place of data.results ?? []) {
-19    const name = place.name;
-20    const rating = place.rating ?? "н/д";
-21    const vicinity = place.vicinity ?? "";
-22    // place_id -- унікальний ідентифікатор місця у Spanner
-23    const placeId = place.place_id;
-24    console.log(`${name} | Рейтинг: ${rating} | ${vicinity}`);
-25    console.log(`  place_id: ${placeId}`);
-26  }
+const API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
+
+// Пошук найближчих кав'ярень (Places Service / Spanner)
+const url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json");
+url.search = new URLSearchParams({
+  // Координати центру ХНУРЕ
+  location: "49.9935,36.2304",
+  radius: "500",
+  type: "cafe",
+  language: "uk",
+  key: API_KEY,
+}).toString();
+
+const response = await fetch(url);
+const data = await response.json();
+
+// Обробка результатів від Places Service
+for (const place of data.results ?? []) {
+  const name = place.name;
+  const rating = place.rating ?? "н/д";
+  const vicinity = place.vicinity ?? "";
+  // place_id -- унікальний ідентифікатор місця у Spanner
+  const placeId = place.place_id;
+  console.log(`${name} | Рейтинг: ${rating} | ${vicinity}`);
+  console.log(`  place_id: ${placeId}`);
+}
 ```
 
 == Організація Git-репозиторію
@@ -283,53 +295,53 @@ Pract2/
 = Приклади програмного коду та запити до ШІ
 == Запит до Directions API з урахуванням трафіку <directions-api-code>
 ```typescript
-01  const API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
-02
-03  const url = new URL("https://maps.googleapis.com/maps/api/directions/json");
-04  url.search = new URLSearchParams({
-05    origin: "Харків, Україна",
-06    destination: "Київ, Україна",
-07    mode: "driving",
-08    departure_time: "now",
-09    traffic_model: "best_guess",
-10    key: API_KEY,
-11  }).toString();
-12
-13  const response = await fetch(url);
-14  const data = await response.json();
-15
-16  if (data.status === "OK") {
-17    const route = data.routes[0].legs[0];
-18    console.log(`Відстань: ${route.distance.text}`);
-19    console.log(`Час без трафіку: ${route.duration.text}`);
-20    console.log(`Час з урахуванням трафіку: ${route.duration_in_traffic.text}`);
-21  }
+const API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
+
+const url = new URL("https://maps.googleapis.com/maps/api/directions/json");
+url.search = new URLSearchParams({
+  origin: "Харків, Україна",
+  destination: "Київ, Україна",
+  mode: "driving",
+  departure_time: "now",
+  traffic_model: "best_guess",
+  key: API_KEY,
+}).toString();
+
+const response = await fetch(url);
+const data = await response.json();
+
+if (data.status === "OK") {
+  const route = data.routes[0].legs[0];
+  console.log(`Відстань: ${route.distance.text}`);
+  console.log(`Час без трафіку: ${route.duration.text}`);
+  console.log(`Час з урахуванням трафіку: ${route.duration_in_traffic.text}`);
+}
 ```
 
 == Пошук найближчих місць через Places API <places-api-code>
 ```typescript
-01  const API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
-02
-03  const url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json");
-04  url.search = new URLSearchParams({
-05    location: "49.9935,36.2304",
-06    radius: "500",
-07    type: "cafe",
-08    language: "uk",
-09    key: API_KEY,
-10  }).toString();
-11
-12  const response = await fetch(url);
-13  const data = await response.json();
-14
-15  for (const place of data.results ?? []) {
-16    const name = place.name;
-17    const rating = place.rating ?? "н/д";
-18    const vicinity = place.vicinity ?? "";
-19    const placeId = place.place_id;
-20    console.log(`${name} | Рейтинг: ${rating} | ${vicinity}`);
-21    console.log(`  place_id: ${placeId}`);
-22  }
+const API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
+
+const url = new URL("https://maps.googleapis.com/maps/api/place/nearbysearch/json");
+url.search = new URLSearchParams({
+  location: "49.9935,36.2304",
+  radius: "500",
+  type: "cafe",
+  language: "uk",
+  key: API_KEY,
+}).toString();
+
+const response = await fetch(url);
+const data = await response.json();
+
+for (const place of data.results ?? []) {
+  const name = place.name;
+  const rating = place.rating ?? "н/д";
+  const vicinity = place.vicinity ?? "";
+  const placeId = place.place_id;
+  console.log(`${name} | Рейтинг: ${rating} | ${vicinity}`);
+  console.log(`  place_id: ${placeId}`);
+}
 ```
 
 == Запит до сервісу ШІ
