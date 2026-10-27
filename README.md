@@ -91,7 +91,7 @@ pencelheimer чи linerds використовуються, лише якщо п
 | Шлях | Призначення |
 | --- | --- |
 | `SKILL.md` | правила оформлення тексту, головний файл скіла |
-| `templates.md` | вибір шаблону, встановлення пакета та налаштування документа |
+| `TEMPLATES.md` | вибір шаблону, встановлення пакета та налаштування документа |
 | `vendor/beauloxe/` | повний клон beauloxe/typst-nure-template (підмодуль, гілка `main`) |
 | `vendor/pencelheimer/` | повний клон pencelheimer/typst-nure-template (підмодуль, гілка `main`) |
 | `vendor/linerds/` | повний клон linerds/typst_nure_template (підмодуль, найновіша гілка-версія) |
