@@ -1,9 +1,11 @@
 # typst-dstu-nure
 
 > [!NOTE]
-> Цей скіл існує заради Typst-пакета `nure` у двох його варіантах —
+> Цей скіл існує заради Typst-пакета `nure` у трьох його варіантах —
+> [beauloxe/typst-nure-template](https://github.com/beauloxe/typst-nure-template)
+> (0.3.x, використовується типово),
 > [pencelheimer/typst-nure-template](https://github.com/pencelheimer/typst-nure-template)
-> (0.2.x, використовується типово) і
+> (0.2.x) і
 > [linerds/typst_nure_template](https://github.com/linerds/typst_nure_template)
 > (0.1.x) — і поза ними не має сенсу. Сам пакет — не моя робота: верстку за ДСТУ, титульні
 > сторінки, стилі, нумерацію та бібліографію зробили його автори. Моє тут лише
@@ -73,24 +75,28 @@ Cursor додатково підхоплює теки Claude та Codex, а Code
 
 ```bash
 mkdir -p ~/.local/share/typst/packages/local/nure
+ln -s ~/.skills/typst-dstu-nure/vendor/beauloxe ~/.local/share/typst/packages/local/nure/0.3.0
 ln -s ~/.skills/typst-dstu-nure/vendor/pencelheimer ~/.local/share/typst/packages/local/nure/0.2.0
 ln -s ~/.skills/typst-dstu-nure/vendor/linerds ~/.local/share/typst/packages/local/nure/0.1.1
 ```
 
 ## Вибір шаблону
 
-Агент не питає, який шаблон брати: типово це pencelheimer. linerds
-використовується, лише якщо прямо про це попросити, або коли агент редагує
-звіт, що вже імпортує `@local/nure:0.1.x`.
+Агент не питає, який шаблон брати: типово це beauloxe (потрібен Typst 0.15+).
+pencelheimer чи linerds використовуються, лише якщо прямо про це попросити,
+або коли агент редагує звіт, що вже імпортує `@local/nure:0.1.x` чи `0.2.x`.
 
 ## Структура
 
 | Шлях | Призначення |
 | --- | --- |
-| `SKILL.md` | правила оформлення, головний файл скіла |
+| `SKILL.md` | правила оформлення тексту, головний файл скіла |
+| `templates.md` | вибір шаблону, встановлення пакета та налаштування документа |
+| `vendor/beauloxe/` | повний клон beauloxe/typst-nure-template (підмодуль, гілка `main`) |
 | `vendor/pencelheimer/` | повний клон pencelheimer/typst-nure-template (підмодуль, гілка `main`) |
 | `vendor/linerds/` | повний клон linerds/typst_nure_template (підмодуль, найновіша гілка-версія) |
-| `examples/pencelheimer/example-pz.typ` | приклад повного звіту з додатками на pencelheimer |
+| `examples/beauloxe/example-pz.typ` | приклад повного звіту з додатками на beauloxe |
+| `examples/pencelheimer/example-pz.typ` | той самий звіт на pencelheimer |
 | `examples/linerds/example-pz.typ` | той самий звіт на linerds |
 | `scripts/update-vendor.sh` | оновлення підмодулів із перевіркою компіляції прикладів |
 | `.github/workflows/update-vendor.yml` | щотижневий запуск цього скрипта |
@@ -100,7 +106,7 @@ ln -s ~/.skills/typst-dstu-nure/vendor/linerds ~/.local/share/typst/packages/loc
 ## Оновлення шаблонів
 
 Клони в `vendor/` навмисно лежать тут, а не замінені посиланням: агент може
-досліджувати обидва шаблони повністю й без інтернету, а якщо першоджерело
+досліджувати всі шаблони повністю й без інтернету, а якщо першоджерело
 зникне чи переїде, скіл лишиться робочим.
 
 Щопонеділка GitHub Action запускає `scripts/update-vendor.sh`, який:
@@ -120,5 +126,5 @@ Run workflow, або локально `scripts/update-vendor.sh` (потрібе
 
 ## Першоджерела та ліцензія
 
-Обидва шаблони поширюються за GNU GPL v3. Оскільки цей репозиторій містить
+Усі шаблони поширюються за GNU GPL v3. Оскільки цей репозиторій містить
 їхні клони, він також поширюється за [GNU GPL v3](LICENSE).

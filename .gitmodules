@@ -6,3 +6,7 @@
 	path = vendor/linerds
 	url = https://github.com/linerds/typst_nure_template.git
 	branch = 0.1.1
+[submodule "vendor/beauloxe"]
+	path = vendor/beauloxe
+	url = https://github.com/beauloxe/typst-nure-template.git
+	branch = main

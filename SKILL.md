@@ -1,6 +1,6 @@
 ---
 name: typst-dstu-nure
-description: Master formatting Typst reports according to DSTU guidelines using the NURE package (pencelheimer or linerds template). Use when writing practice works, lab reports, or courseworks in Typst.
+description: Master formatting Typst reports according to DSTU guidelines using the NURE package (beauloxe, pencelheimer or linerds template). Use when writing practice works, lab reports, or courseworks in Typst.
 ---
 
 # Правила оформлення звітів у Typst (ДСТУ ХНУРЕ)
@@ -8,147 +8,12 @@ description: Master formatting Typst reports according to DSTU guidelines using 
 Цей скілл призначений для створення академічних звітів у форматі Typst з
 використанням Typst-пакета ХНУРЕ `nure` та дотримання стандартів ДСТУ.
 
-## 0. Вибір шаблону
+## 1. Шаблон і налаштування документа
 
-Пакет `nure` існує у двох несумісних варіантах:
-
-| Шаблон | Версія | Імпорт | Підхід |
-| --- | --- | --- | --- |
-| **pencelheimer** (типовий) | 0.2.x | `@local/nure:0.2.0` | конструктор: `style.dstu` + `config.setup` + блоки `parts.*` |
-| linerds | 0.1.x | `@local/nure:0.1.1` | одна обгортка `pz-lb` / `coursework` / `coursework-v2` з усіма аргументами |
-
-Правило вибору — НЕ питайте користувача:
-
-- завжди використовуйте **pencelheimer**;
-- linerds — лише тоді, коли користувач прямо про це попросив (згадав linerds,
-  `pz-lb` або версію 0.1.x);
-- виняток: якщо редагується вже наявний звіт, який імпортує `@local/nure:0.1.x`
-  або викликає `pz-lb`, лишайтеся на linerds — інакше звіт перестане
-  компілюватися.
-
-Версії в імпортах вище актуальні на момент написання. Справжню версію беріть з
-поля `version` у `vendor/<шаблон>/typst.toml`.
-
-## Перед початком роботи
-
-Повні клони обох репозиторіїв лежать у `vendor/` як git-підмодулі, тому їх
-можна досліджувати навіть без інтернету. Оновлює їх щотижнева GitHub Action
-(`.github/workflows/update-vendor.yml`), тож самі нічого не тягніть з
-першоджерел і нічого не пуште.
-
-1. Перевірте, що підмодулі ініціалізовані:
-
-   ```bash
-   git -C <тека скіла> submodule status
-   ```
-
-   Якщо рядок починається з `-`, підмодуль порожній — ініціалізуйте:
-
-   ```bash
-   git -C <тека скіла> submodule update --init
-   ```
-
-2. Перевірте, що пакет потрібної версії встановлено для Typst:
-   `~/.local/share/typst/packages/local/nure/<version>/`. Якщо теки немає,
-   підключіть клон симлінком (і скажіть про це користувачеві):
-
-   ```bash
-   ln -s <тека скіла>/vendor/pencelheimer ~/.local/share/typst/packages/local/nure/0.2.0
-   ```
-
-## Де шукати деталі API
-
-Інформацію про API звіряйте з `vendor/`, а не з пам'яті — шаблони відрізняються
-навіть назвами аргументів.
-
-**pencelheimer** (`vendor/pencelheimer/`):
-
-- `README.md` — архітектура та швидкий старт;
-- `src/config.typ` — `config.setup(...)` з doc-коментарями до кожного
-  аргументу, словники освітніх програм і дисциплін (`subject: "АПЗ"`
-  розгортається в повну назву);
-- `src/parts.typ` — структурні блоки: `report-title-page`,
-  `coursework-title-page`, `title-heading`, `task-list`, `calendar-plan`,
-  `abstract`, `table-of-contents`, `metadata`;
-- `src/style.typ` — `style.dstu` (show-правило, аргументи `skip`, `offset`),
-  `style.appendices`, `style.spacing`, `style.dstu-table` (таблиці з
-  «Продовження таблиці» за ДСТУ);
-- `src/utils.typ` — `nheading`, `hfill`, `uline`, `bold`, `img`;
-- `template/main.typ` — стартовий кістяк звіту.
-
-**linerds** (`vendor/linerds/`):
-
-- `README.md` — шаблони `pz-lb`, `coursework`, `coursework-v2`, утиліти,
-  метадані в `doc.toml`, бібліографія `bibl.yml`;
-- `src/lib.typ` — сигнатури шаблонів із doc-коментарями;
-- `template/default/` — кістяки `lab.typ`, `coursework.typ`,
-  `coursework-v2.typ` та помічник `utils.typ`.
-- Увага: розділ про встановлення під Windows у README наводить функцію
-  `nure-report` з аргументами `discipline`/`author`/`supervisor` — такої
-  функції в пакеті немає. Користуйтеся `pz-lb` з `authors:`/`mentors:`/`subject:`.
-
-Еталонні повні звіти з додатками та лістингами коду — по одному на шаблон:
-`examples/pencelheimer/example-pz.typ` і `examples/linerds/example-pz.typ`.
-Тіло в них однакове, відрізняється лише налаштування документа.
-
-## 1. Ініціалізація та налаштування документа
-
-### pencelheimer (типово)
-
-```typst
-#import "@local/nure:0.2.0": config, parts, style
-
-#show: style.dstu.with(skip: 1) // титульна сторінка без номера
-
-#config.setup(
-  title: "Назва роботи",
-  subject: "АПЗ",
-  work-type: "ПЗ", // або "ЛБ", "КР", "РФ", "ІДЗ"
-  work-number: 2,
-  edu-program: "ПЗПІ",
-  mentors: (
-    (name: "Петренко П. П.", degree: "ст. викладач кафедри ПІ", gender: "m"), // m - чоловік, f - жінка
-  ),
-  authors: (
-    (name: "Іваненко І. І.", edu-program: "ПЗПІ", group: "XX-X", gender: "m", variant: none),
-  ),
-)
-
-#parts.metadata()
-#parts.report-title-page()
-#parts.title-heading() // заголовок з назвою роботи; пропустіть, якщо не потрібен
-#v(-style.spacing)
-```
-
-Аргументи `parts.*` за замовчуванням беруться з `config.setup`, але кожен можна
-перевизначити у виклику блока.
-
-### linerds
-
-Для ПЗ та ЛБ використовується шаблон `pz-lb`. Усі аргументи мають формат `kebab-case`.
-
-```typst
-#import "@local/nure:0.1.1": pz-lb, style
-
-#show: pz-lb.with(
-  title: "Назва роботи",
-  subject: "АПЗ",
-  layout: "ХНУРЕ",
-  type: "ПЗ", // або "ЛБ"
-  number: 2,
-  edu-program: "ПЗПІ",
-  university: "ХНУРЕ",
-  mentors: (
-    (name: "Петренко П. П.", degree: "ст. викладач кафедри ПІ", gender: "m"), // m - чоловік, f - жінка
-  ),
-  authors: (
-    (name: "Іваненко І. І.", edu-program: "ПЗПІ", group: "XX-X", gender: "m", variant: none),
-  ),
-)
-```
-
-Далі правила спільні для обох шаблонів: обидва експортують модуль `style` з
-`style.spacing` і `style.appendices`.
+Як підключити пакет, який із трьох шаблонів брати (типово **beauloxe**) і як
+налаштувати документ, описано в окремому файлі `templates.md` поруч із цим.
+Прочитайте його перед тим, як писати звіт. Правила нижче спільні для всіх
+шаблонів: кожен експортує модуль `style` з `style.spacing` і `style.appendices`.
 
 ## 2. Стилістика тексту та граматика (Безособовий стиль)
 
