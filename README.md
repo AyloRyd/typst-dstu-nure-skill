@@ -24,62 +24,20 @@
 
 ## Встановлення
 
-Скіл — це звичайна тека з `SKILL.md`, тому його розуміє будь-який агент із
-підтримкою Agent Skills. Зручно тримати одну копію й розкласти симлінки:
-
 ```bash
-git clone --recursive https://github.com/AyloRyd/typst-dstu-nure-skill.git ~/.skills/typst-dstu-nure
+git clone --recursive https://github.com/AyloRyd/typst-dstu-nure-skill.git <тека скілів агента>/typst-dstu-nure
 ```
 
-`--recursive` потрібен, щоб одразу підтягнулися підмодулі з шаблонами. Якщо
-клонували без нього — `git submodule update --init`. Оновлювати скіл разом із
-шаблонами: `git pull --recurse-submodules`.
+Тека скілів залежить від агента (`~/.claude/skills/`, `~/.agents/skills/`
+тощо). Тека скіла має називатися `typst-dstu-nure`, як поле `name` у
+`SKILL.md`. `--recursive` підтягує підмодулі з шаблонами, без них скіл не
+працює (якщо забули — `git submodule update --init`).
 
-> [!IMPORTANT]
-> Поле `name` в `SKILL.md` — `typst-dstu-nure`. Claude Code, Cursor і OpenCode
-> вимагають, щоб ім'я теки збігалося з `name`, тому симлінк називайте саме
-> `typst-dstu-nure`, а не так, як називається репозиторій.
-
-Де який агент шукає скіли:
-
-| Агент | Глобально | У межах проєкту |
-| --- | --- | --- |
-| Claude Code | `~/.claude/skills/` | `.claude/skills/` |
-| Codex CLI | `~/.agents/skills/` | `.agents/skills/` (а також батьківські теки та корінь репозиторію) |
-| Cursor | `~/.agents/skills/`, `~/.cursor/skills/` | `.agents/skills/`, `.cursor/skills/` |
-| OpenCode | `~/.agents/skills/`, `~/.config/opencode/skills/`, `~/.claude/skills/` | `.agents/skills/`, `.opencode/skills/`, `.claude/skills/` |
-| Antigravity | `~/.gemini/config/skills/` | — |
-
-`~/.agents/skills/` читають Codex, Cursor і OpenCode, тому для всіх трьох
-достатньо одного симлінка:
-
-```bash
-# Codex, Cursor, OpenCode
-ln -s ~/.skills/typst-dstu-nure ~/.agents/skills/typst-dstu-nure
-
-# Claude Code (Cursor і OpenCode теж читають цю теку)
-ln -s ~/.skills/typst-dstu-nure ~/.claude/skills/typst-dstu-nure
-
-# Antigravity
-ln -s ~/.skills/typst-dstu-nure ~/.gemini/config/skills/typst-dstu-nure
-```
-
-Cursor додатково підхоплює теки Claude та Codex, а Codex у старіших версіях
-шукав скіли в `$CODEX_HOME/skills` (типово `~/.codex/skills/`) — якщо у вас
-саме така збірка, кладіть симлінк туди.
-
-Скіли в теці проєкту зручні, коли робота здається з репозиторію: тоді
-`SKILL.md` їде разом із нею й нічого не треба налаштовувати на іншій машині.
-
-Сам Typst-пакет `nure` встановлюється окремо. Найпростіше — симлінком на
-клон із цього репозиторію, тоді пакет оновлюватиметься разом зі скілом.
-Ім'я теки має збігатися з `version` у `typst.toml` шаблону:
+Typst-пакет `nure` підключіть симлінком на шаблон зі скіла:
 
 ```bash
 mkdir -p ~/.local/share/typst/packages/local/nure
-ln -s ~/.skills/typst-dstu-nure/vendor/beauloxe ~/.local/share/typst/packages/local/nure/0.3.0
-ln -s ~/.skills/typst-dstu-nure/vendor/pencelheimer ~/.local/share/typst/packages/local/nure/0.2.0
-ln -s ~/.skills/typst-dstu-nure/vendor/linerds ~/.local/share/typst/packages/local/nure/0.1.1
+ln -s <тека скіла>/vendor/beauloxe ~/.local/share/typst/packages/local/nure/0.3.0
 ```
 
 ## Вибір шаблону
