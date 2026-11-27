@@ -2,12 +2,12 @@
 
 > [!NOTE]
 > Цей скіл існує заради Typst-пакета `nure` у трьох його варіантах:
-> - [beauloxe/typst-nure-template](https://github.com/beauloxe/typst-nure-template)
-> (0.3.x) - використовується типово,
+> - [linerds/typst-nure-template](https://github.com/linerds/typst-nure-template)
+> (0.3.x, раніше `beauloxe/typst-nure-template`) — використовується типово,
 > - [pencelheimer/typst-nure-template](https://github.com/pencelheimer/typst-nure-template)
 > (0.2.x),
 > - [linerds/typst_nure_template](https://github.com/linerds/typst_nure_template)
-> (0.1.x).
+> (0.1.x, застарілий, більше не оновлюється).
 > 
 > Поза ними скіл не має сенсу. Сам пакет — не моя робота: верстку за ДСТУ, титульні
 > сторінки, стилі, нумерацію та бібліографію зробили його автори. Моє тут лише
@@ -37,14 +37,14 @@ Typst-пакет `nure` підключіть симлінком на шабло�
 
 ```bash
 mkdir -p ~/.local/share/typst/packages/local/nure
-ln -s <тека скіла>/vendor/beauloxe ~/.local/share/typst/packages/local/nure/0.3.0
+ln -s <тека скіла>/vendor/linerds ~/.local/share/typst/packages/local/nure/0.3.0
 ```
 
 ## Вибір шаблону
 
-Агент не питає, який шаблон брати: типово це beauloxe (потрібен Typst 0.15+).
-pencelheimer чи linerds використовуються, лише якщо прямо про це попросити,
-або коли агент редагує звіт, що вже імпортує `@local/nure:0.1.x` чи `0.2.x`.
+Агент не питає, який шаблон брати: типово це `linerds` (`0.3.x`, потрібен Typst 0.15+).
+`pencelheimer` (`0.2.x`) чи застарілий `linerds_old` (`0.1.x`) використовуються, лише якщо
+прямо про це попросити, або коли агент редагує звіт, що вже імпортує `@local/nure:0.1.x` чи `0.2.x`.
 
 ## Структура
 
@@ -52,12 +52,12 @@ pencelheimer чи linerds використовуються, лише якщо п
 | --- | --- |
 | `SKILL.md` | правила оформлення тексту, головний файл скіла |
 | `TEMPLATES.md` | вибір шаблону, встановлення пакета та налаштування документа |
-| `vendor/beauloxe/` | повний клон beauloxe/typst-nure-template (підмодуль, гілка `main`) |
+| `vendor/linerds/` | повний клон linerds/typst-nure-template (підмодуль, гілка `main`) |
 | `vendor/pencelheimer/` | повний клон pencelheimer/typst-nure-template (підмодуль, гілка `main`) |
-| `vendor/linerds/` | повний клон linerds/typst_nure_template (підмодуль, найновіша гілка-версія) |
-| `examples/beauloxe/example-pz.typ` | приклад повного звіту з додатками на beauloxe |
+| `vendor/linerds_old/` | повний клон застарілого linerds/typst_nure_template (підмодуль, найновіша гілка-версія) |
+| `examples/linerds/example-pz.typ` | приклад повного звіту з додатками на linerds (0.3.x) |
 | `examples/pencelheimer/example-pz.typ` | той самий звіт на pencelheimer |
-| `examples/linerds/example-pz.typ` | той самий звіт на linerds |
+| `examples/linerds_old/example-pz.typ` | той самий звіт на linerds_old (0.1.x) |
 | `scripts/update-vendor.sh` | оновлення підмодулів із перевіркою компіляції прикладів |
 | `.github/workflows/update-vendor.yml` | щотижневий запуск цього скрипта |
 
@@ -71,7 +71,7 @@ pencelheimer чи linerds використовуються, лише якщо п
 
 Щопонеділка GitHub Action запускає `scripts/update-vendor.sh`, який:
 
-- підтягує останній коміт кожного підмодуля; для linerds, де версії живуть в
+- підтягує останній коміт кожного підмодуля; для `linerds_old`, де версії живуть в
   окремих гілках (`0.1.0`, `0.1.1`, …), спершу перемикається на найновішу;
 - компілює `examples/<шаблон>/*.typ` проти нової версії;
 - комітить оновлення, лише якщо приклади зібралися, інакше відкочує його й
