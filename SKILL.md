@@ -1,6 +1,6 @@
 ---
 name: typst-dstu-nure
-description: Master formatting Typst reports according to DSTU guidelines using the NURE package (beauloxe, pencelheimer or linerds template). Use when writing practice works, lab reports, or courseworks in Typst.
+description: Master formatting Typst reports according to DSTU guidelines using the NURE package (linerds 0.3.x, pencelheimer 0.2.x, or legacy linerds_old 0.1.x template). Use when writing practice works, lab reports, or courseworks in Typst.
 ---
 
 # Правила оформлення звітів у Typst (ДСТУ ХНУРЕ)
@@ -10,7 +10,7 @@ description: Master formatting Typst reports according to DSTU guidelines using 
 
 ## 1. Шаблон і налаштування документа
 
-Як підключити пакет, який із трьох шаблонів брати (типово **beauloxe**) і як
+Як підключити пакет, який із трьох шаблонів брати (типово **linerds**) і як
 налаштувати документ, описано в окремому файлі `TEMPLATES.md` поруч із цим.
 Прочитайте його перед тим, як писати звіт. Правила нижче спільні для всіх
 шаблонів: кожен експортує модуль `style` з `style.spacing` і `style.appendices`.
@@ -108,7 +108,7 @@ description: Master formatting Typst reports according to DSTU guidelines using 
 
 ## 8. Робота із зображеннями (Скріншоти)
 
-У **beauloxe** (типовому) вставляйте рисунки через `fig` (повна назва
+У **linerds** (типовому) вставляйте рисунки через `fig` (повна назва
 `dstu-figure`): до підпису сам додається примітка про джерело.
 
 ```typst
@@ -130,7 +130,7 @@ description: Master formatting Typst reports according to DSTU guidelines using 
 - `note:` — примітка (або масив приміток) під зображенням перед назвою.
 - `width`, `height`, `fit` передаються в `image`.
 
-В інших шаблонах (і в beauloxe, якщо `fig` не підходить) — звичайний
+В інших шаблонах (і в linerds, якщо `fig` не підходить) — звичайний
 `#figure`:
 
 ```typst
@@ -222,7 +222,7 @@ description: Master formatting Typst reports according to DSTU guidelines using 
 }
 ```
 
-Код у рядку (`` `ls -la` ``) у beauloxe за ДСТУ виводиться звичайним шрифтом у
+Код у рядку (`` `ls -la` ``) у linerds за ДСТУ виводиться звичайним шрифтом у
 лапках («ls -la»), а не моноширинним. Моноширинний інлайн-код вмикайте лише на
 прохання користувача: `#show: style.overrides.inline-code` після `style.dstu`.
 
@@ -241,7 +241,7 @@ url.search = new URLSearchParams({ key: API_KEY }).toString();
 
 ## 11. Формули
 
-Виносні формули пишуться через `$ ... $` з пробілами всередині. У beauloxe
+Виносні формули пишуться через `$ ... $` з пробілами всередині. У linerds
 номер справа («(1.1)») отримує лише формула, на яку є посилання в тексті
 (ДСТУ 3008:2015, 7.10.2), тому кожній формулі, яка має бути пронумерована,
 дайте мітку й пошліться на неї. Пояснення познак — з нового рядка без
@@ -254,6 +254,6 @@ $ E = m c^2 $ <einstein>
 Обчислимо за @einstein[формулою] ...
 ```
 
-`utils.noindent` є лише в beauloxe; в інших шаблонах те саме дає
+`utils.noindent` є лише в linerds; в інших шаблонах те саме дає
 `#par(first-line-indent: 0pt)[де ...]`. Десяткові дроби пишіть із крапкою
-(`$g = 9.8$`): beauloxe сам виведе кому («9,8»).
+(`$g = 9.8$`): linerds сам виведе кому («9,8»).

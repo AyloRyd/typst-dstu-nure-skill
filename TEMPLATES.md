@@ -11,16 +11,16 @@
 
 | Шаблон | Версія | Імпорт | Документація |
 | --- | --- | --- | --- |
-| **beauloxe** (типовий) | 0.3.x | `@local/nure:0.3.0` | `vendor/beauloxe/README.md`, `vendor/beauloxe/docs/` |
+| **linerds** (типовий) | 0.3.x | `@local/nure:0.3.0` | `vendor/linerds/README.md`, `vendor/linerds/docs/` |
 | pencelheimer | 0.2.x | `@local/nure:0.2.0` | `vendor/pencelheimer/README.md`, doc-коментарі в `src/` |
-| linerds | 0.1.x | `@local/nure:0.1.1` | `vendor/linerds/README.md`, doc-коментарі в `src/lib.typ` |
+| linerds_old (застарілий) | 0.1.x | `@local/nure:0.1.1` | `vendor/linerds_old/README.md`, doc-коментарі в `src/lib.typ` |
 
 Користувача про шаблон НЕ питайте:
 
-- завжди використовуйте **beauloxe**;
-- pencelheimer чи linerds беріть лише тоді, коли користувач прямо назвав
+- завжди використовуйте **linerds** (`0.3.x`, раніше `beauloxe`);
+- `pencelheimer` чи застарілий `linerds_old` (`0.1.x`, більше не оновлюється) беріть лише тоді, коли користувач прямо назвав
   шаблон, його версію або характерну функцію (`config.setup`/`parts.*` —
-  pencelheimer, `pz-lb` у версії 0.1.x — linerds);
+  pencelheimer, `pz-lb` у версії 0.1.x — linerds_old);
 - якщо редагується вже наявний звіт, лишайтеся на шаблоні, який він імпортує
   (`@local/nure:0.1.x` чи `0.2.x`), інакше звіт перестане компілюватися.
 
@@ -30,8 +30,8 @@
 
 Еталонний повний звіт з додатками й лістингами є для кожного шаблону:
 `examples/<шаблон>/example-pz.typ`. Тіло в них однакове, відрізняється
-налаштування документа, а приклад beauloxe додатково показує його можливості:
-`fig` з власною схемою (`examples/beauloxe/img/`), `tab` з приміткою, `note`,
+налаштування документа, а приклад `linerds` додатково показує його можливості:
+`fig` з власною схемою (`examples/linerds/img/`), `tab` з приміткою, `note`,
 пронумеровану формулу з поясненням через `utils.noindent` і лістинг у `figure`
 з підписом.
 
@@ -60,16 +60,16 @@
 
    ```bash
    mkdir -p ~/.local/share/typst/packages/local/nure
-   ln -s <тека скіла>/vendor/beauloxe ~/.local/share/typst/packages/local/nure/0.3.0
+   ln -s <тека скіла>/vendor/linerds ~/.local/share/typst/packages/local/nure/0.3.0
    ```
 
-3. beauloxe потребує **Typst 0.15 або новішого** (`typst --version`). Якщо
+3. `linerds` (`0.3.x`) потребує **Typst 0.15 або новішого** (`typst --version`). Якщо
    версія старіша, скажіть про це користувачеві — не перемикайтеся мовчки на
    інший шаблон.
 
-## beauloxe (типовий)
+## linerds (типовий)
 
-Документація в `vendor/beauloxe/docs/`:
+Документація в `vendor/linerds/docs/`:
 
 - `lab.md` — лабораторна чи практична від титулки до додатків;
 - `coursework.md` — курсова робота й комплексний курсовий проєкт;
@@ -116,7 +116,7 @@
 Якщо поруч зі звітом лежить `doc.toml` з тими самими полями, замість переліку
 аргументів можна написати `work(..toml("doc.toml"), title: "...")`.
 
-### Що є лише в beauloxe
+### Що є лише в linerds
 
 - `fig(path("img/a.png"), [Підпис], label: <a>)` — рисунок з приміткою про
   джерело. Шлях обов'язково обгортайте в `path()`: рядок шукався б у теці
@@ -146,9 +146,10 @@
 + блоки `parts.*`. Аргументи — у doc-коментарях `vendor/pencelheimer/src/config.typ`
 і `src/parts.typ`, приклад — `examples/pencelheimer/example-pz.typ`.
 
-## linerds
+## linerds_old (застарілий)
 
-Лише за прямим запитом. Підхід: одна обгортка `#show: pz-lb.with(...)` (або
+Застарілий шаблон (`linerds/typst_nure_template`, 0.1.x), більше не оновлюється.
+Лише за прямим запитом або для підтримки наявних звітів на `0.1.x`. Підхід: одна обгортка `#show: pz-lb.with(...)` (або
 `coursework`, `coursework-v2`) з усіма аргументами. Сигнатури — у
-`vendor/linerds/src/lib.typ`, приклад — `examples/linerds/example-pz.typ`.
+`vendor/linerds_old/src/lib.typ`, приклад — `examples/linerds_old/example-pz.typ`.
 Розділ README про Windows згадує функцію `nure-report` — такої в пакеті немає.

@@ -2,7 +2,7 @@
 # Bump every submodule in vendor/ to its latest upstream commit and keep the
 # bump only if the matching examples/<name>/*.typ still compile against it.
 #
-# Repos that publish versions as branches (linerds: 0.1.0, 0.1.1, ...) are
+# Repos that publish versions as branches (linerds_old: 0.1.0, 0.1.1, ...) are
 # switched to the highest such branch; the rest follow the branch already set
 # in .gitmodules. Accepted bumps are staged, rejected ones are rolled back.
 # Exits 1 if any bump was rejected, so a scheduled CI run shows up as failed.

@@ -1,32 +1,22 @@
-#import "@local/nure:0.1.1": pz-lb, style.appendices, style.spacing
+#import "@local/nure:0.3.0": *
 
-#show: pz-lb.with(
-  title: "Архітектура Google Maps",
-  skip-heading: true,
+#let w = work(
   subject: "АПЗ",
-  layout: "ХНУРЕ",
   type: "ПЗ",
   number: 2,
-  edu-program: "ПЗПІ",
-  university: "ХНУРЕ",
+  title: "Архітектура Google Maps",
   mentors: (
-    (
-      name: "Петренко П. П.",
-      degree: "ст. викладач кафедри ПІ",
-      gender: "f",
-    ),
+    (name: "Петренко П. П.", degree: "ст. викладач кафедри ПІ", gender: "f"),
   ),
   authors: (
-    (
-      name: "Іваненко І. І.",
-      edu-program: "ПЗПІ",
-      group: "XX-X",
-      gender: "m",
-      variant: none,
-    ),
+    (name: "Іваненко І. І.", edu-program: "ПЗПІ", group: "XX-X", gender: "m", variant: none),
   ),
 )
 
+#set document(..w.document)
+#show: style.dstu.with(skip: 1)
+
+#report.title-page(w)
 // Автоматична нумерація рядків у лістингах із вказаною мовою.
 // Блоки без мови (дерева каталогів тощо) лишаються без номерів.
 #show raw.where(block: true): it => {
@@ -53,7 +43,7 @@
   caption: caption,
 )
 
-#v(-spacing)
+#pagebreak(weak: true)
 = Історія змін
 #table(
   columns: 4,
@@ -97,6 +87,16 @@ Google Maps побудовано на основі мікросервісної 
 + безперервне оновлення: карти оновлюються постійно (дані від користувачів, супутники, автомобілі Street View). Мікросервіси дозволяють оновлювати окремі компоненти пайплайну обробки геоданих без зупинки всього сервісу.
 
 == Основні компоненти системи
+Взаємозв'язок основних компонентів системи показано на @architecture[рисунку]. Усі клієнтські запити проходять через API Gateway, який передає їх відповідному сервісу.
+
+#fig(
+  path("img/architecture.svg"),
+  [Схема основних компонентів Google Maps],
+  none,
+  label: <architecture>,
+  width: 90%,
+)
+
 === Інтерфейс користувача (Frontend)
 Веб-клієнт реалізовано на основі JavaScript з активним використанням WebGL для рендерингу векторних тайлів безпосередньо на пристрої клієнта. Мобільні застосунки (Android, iOS) написано на рідних мовах -- Kotlin/Java та Swift/Objective-C відповідно -- і оптимізовано для офлайн-режиму з локальним кешуванням тайлів.
 
@@ -137,8 +137,23 @@ API Gateway виступає єдиною точкою входу для всі�
 - WebSocket: для навігації в реальному часі -- постійне з'єднання дозволяє серверу "штовхати" оновлення трафіку та перерахунки маршруту без опитування (polling) з боку клієнта;
 - Protobuf (Protocol Buffers): бінарний формат серіалізації від Google для передачі тайлів та геометрій. У 3--10 разів компактніший за JSON, що критично при передачі мільярдів тайлів.
 
+Призначення протоколів зведено в @protocols[таблиці].
+
+#tab(
+  caption: [Протоколи взаємодії компонентів],
+  columns: (1fr, 2fr),
+  header: ([Протокол], [Де використовується]),
+  label: <protocols>,
+  note: [Перелік складено за відкритою документацією Google Maps Platform.],
+  [gRPC], [виклики між мікросервісами],
+  [WebSocket], [оновлення маршруту під час навігації],
+  [Protobuf], [передача тайлів і геометрій],
+)
+
 === Механізми синхронізації
 Для системи такого масштабу суворий принцип узгодженості (strong consistency) застосовується лише там, де це необхідно. Дані про місця (Places) зберігаються у Spanner з глобальними транзакціями. Тайли карти та Traffic-дані використовують принцип _eventual consistency_ -- незначна затримка в оновленні карти (секунди або хвилини) є прийнятною для більшості сценаріїв використання.
+
+#note[Внутрішні деталі реалізації Google не розкриває, тому опис базується на публічних доповідях та документації компанії.]
 
 == Масштабованість та надійність
 === Балансування навантаження
@@ -146,6 +161,12 @@ Google використовує власну систему глобальног
 
 === Кешування тайлів
 Кешування -- наріжний камінь масштабованості Maps. Оскільки більшість користувачів переглядає обмежений набір популярних регіонів, кеш має надзвичайно високий відсоток влучень (cache hit rate). Використовується стратегія кешування на кількох рівнях: CDN (ближче до користувача) → Redis-кластер (на рівні регіону) → Bigtable (джерело даних). Завдяки цьому лише незначна частка запитів досягає рівня генерації тайлів.
+
+Ефективність кешу оцінюється за @hit-rate[формулою]:
+
+$ H = N_"hit" / (N_"hit" + N_"miss") $ <hit-rate>
+
+#utils.noindent де $N_"hit"$ -- кількість запитів, обслужених із кешу, $N_"miss"$ -- кількість запитів, що дійшли до Bigtable.
 
 === Відмовостійкість
 Система розгорнута одночасно в декількох регіонах та зонах доступності Google Cloud. У разі збою цілого регіону трафік автоматично перемикається на сусідній. На рівні окремих сервісів застосовується патерн Circuit Breaker: якщо Routing Service деградує, клієнти отримують збережений кешований маршрут або спрощений результат, а не відмову обслуговування.
@@ -260,7 +281,7 @@ Pract2/
 
 Архітектура Google Maps є взірцевим прикладом побудови глобально масштабованих геопросторових систем, де правильний вибір структур даних (геохеши, Protobuf) та технологій зберігання (Bigtable, Spanner) є не менш важливим, ніж архітектурний стиль.
 
-#show: appendices
+#show: style.appendices
 = Відеозапис
 Відеозапис презентації результатів практичної роботи: https://youtu.be/XXXXXXXXXXX
 
@@ -293,30 +314,33 @@ Pract2/
 }
 
 = Приклади програмного коду та запити до ШІ
-== Запит до Directions API з урахуванням трафіку <directions-api-code>
-```typescript
-const API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
+== Запит до Directions API з урахуванням трафіку
+#figure(
+  ```typescript
+  const API_KEY = "YOUR_GOOGLE_MAPS_API_KEY";
 
-const url = new URL("https://maps.googleapis.com/maps/api/directions/json");
-url.search = new URLSearchParams({
-  origin: "Харків, Україна",
-  destination: "Київ, Україна",
-  mode: "driving",
-  departure_time: "now",
-  traffic_model: "best_guess",
-  key: API_KEY,
-}).toString();
+  const url = new URL("https://maps.googleapis.com/maps/api/directions/json");
+  url.search = new URLSearchParams({
+    origin: "Харків, Україна",
+    destination: "Київ, Україна",
+    mode: "driving",
+    departure_time: "now",
+    traffic_model: "best_guess",
+    key: API_KEY,
+  }).toString();
 
-const response = await fetch(url);
-const data = await response.json();
+  const response = await fetch(url);
+  const data = await response.json();
 
-if (data.status === "OK") {
-  const route = data.routes[0].legs[0];
-  console.log(`Відстань: ${route.distance.text}`);
-  console.log(`Час без трафіку: ${route.duration.text}`);
-  console.log(`Час з урахуванням трафіку: ${route.duration_in_traffic.text}`);
-}
-```
+  if (data.status === "OK") {
+    const route = data.routes[0].legs[0];
+    console.log(`Відстань: ${route.distance.text}`);
+    console.log(`Час без трафіку: ${route.duration.text}`);
+    console.log(`Час з урахуванням трафіку: ${route.duration_in_traffic.text}`);
+  }
+  ```,
+  caption: [Запит до Directions API з урахуванням трафіку],
+) <directions-api-code>
 
 == Пошук найближчих місць через Places API <places-api-code>
 ```typescript
