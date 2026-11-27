@@ -1,13 +1,15 @@
 # typst-dstu-nure
 
 > [!NOTE]
-> Цей скіл існує заради Typst-пакета `nure` у трьох його варіантах —
-> [beauloxe/typst-nure-template](https://github.com/beauloxe/typst-nure-template)
-> (0.3.x, використовується типово),
-> [pencelheimer/typst-nure-template](https://github.com/pencelheimer/typst-nure-template)
-> (0.2.x) і
-> [linerds/typst_nure_template](https://github.com/linerds/typst_nure_template)
-> (0.1.x) — і поза ними не має сенсу. Сам пакет — не моя робота: верстку за ДСТУ, титульні
+> Цей скіл існує заради Typst-пакета `nure` у трьох його варіантах:
+> - [beauloxe/typst-nure-template](https://github.com/beauloxe/typst-nure-template)
+> (0.3.x) - використовується типово,
+> - [pencelheimer/typst-nure-template](https://github.com/pencelheimer/typst-nure-template)
+> (0.2.x),
+> - [linerds/typst_nure_template](https://github.com/linerds/typst_nure_template)
+> (0.1.x).
+> 
+> Поза ними скіл не має сенсу. Сам пакет — не моя робота: верстку за ДСТУ, титульні
 > сторінки, стилі, нумерацію та бібліографію зробили його автори. Моє тут лише
 > обгортка — опис правил оформлення, яких немає в документації пакета, та
 > приклади використання. Якщо шукаєте власне інструмент, а не інструкцію для
